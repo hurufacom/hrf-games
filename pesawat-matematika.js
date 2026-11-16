@@ -1660,6 +1660,15 @@ if(window.ResizeObserver) new ResizeObserver(function(){ resize(); }).observe(ap
 
 initMissions();
 renderTiers(); updateStartBtn();
+/* Langsung tampil memenuhi layar saat halaman dibuka.
+   Browser hanya mengizinkan layar penuh asli setelah ketukan, jadi ketukan pertama
+   di mana saja di dalam game akan menyembunyikan juga bilah alamat browser. */
+(function(){
+  try{ prevOverflow=document.documentElement.style.overflow; document.documentElement.style.overflow='hidden'; }catch(e){}
+  app.classList.add('pa-full');
+  var first=function(){ app.removeEventListener('pointerdown',first,true); if(app.classList.contains('pa-full')) goFull(); };
+  app.addEventListener('pointerdown',first,true);
+})();
 resize();
 requestAnimationFrame(frame);
 })();
