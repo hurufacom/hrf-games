@@ -193,7 +193,7 @@ function masukPenuh(){
   }catch(e){}
 }
 function keluarPenuh(){
-  R.classList.remove("hp-penuh");
+  if (!R.classList.contains("hp-halaman")) R.classList.remove("hp-penuh");
   try{ if (fsEl()){ if (document.exitFullscreen) document.exitFullscreen().catch(function(){}); else if (document.webkitExitFullscreen) document.webkitExitFullscreen(); } }catch(e){}
 }
 
@@ -693,6 +693,29 @@ function tampilGambar(j, namaFile){
   R.appendChild(o);
 }
 
+/* ---------- ambil alih seluruh halaman Blogger ----------
+   Saat halaman postingan/halaman statis dibuka, tampilan template Blogger
+   (header, sidebar, komentar, dll.) disembunyikan dan Playland memenuhi layar.
+   Di beranda dan halaman label/pencarian tidak diambil alih.
+   Untuk mematikan: <div id="hp" data-mode="biasa">Memuat...</div> */
+function ambilHalaman(){
+  if (R.getAttribute("data-mode") === "biasa") return;
+  var p = location.pathname || "";
+  if (/^\/(search|$)/.test(p) && p.indexOf(".html") < 0) return;
+  try{
+    if (R.parentNode !== document.body) document.body.appendChild(R);
+    var st = document.createElement("style");
+    st.textContent = "html,body{margin:0!important;padding:0!important;overflow:hidden!important;height:100%!important;background:#ffe9b8!important}" +
+      "body>*:not(#hp){display:none!important}body>#hp{display:block!important}";
+    (document.head || document.documentElement).appendChild(st);
+    var vp = document.querySelector('meta[name="viewport"]');
+    if (!vp){ vp = document.createElement("meta"); vp.name = "viewport"; (document.head || document.documentElement).appendChild(vp); }
+    vp.setAttribute("content", "width=device-width,initial-scale=1,viewport-fit=cover");
+    R.classList.add("hp-penuh", "hp-halaman");
+    window.scrollTo(0, 0);
+  }catch(e){}
+}
+ambilHalaman();
 bangun();
 })();
 
